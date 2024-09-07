@@ -63,6 +63,15 @@ fn main() {
             .define("WAMR_BUILD_CUSTOM_NAME_SECTION", enable_name_section)
             .define("WAMR_BUILD_LOAD_CUSTOM_SECTION", enable_custom_section);
 
+        match &*env::var("CARGO_CFG_TARGET_ARCH").unwrap() {
+            "mips" => {
+                cfg.define("WAMR_BUILD_TARGET", "MIPS")
+                    .define("WAMR_BUILD_INVOKE_NATIVE_GENERAL", "1");
+            },
+            "arm" => { cfg.define("WAMR_BUILD_TARGET", "ARM"); },
+            _ => {}
+        }
+
         // support STDIN/STDOUT/STDERR redirect.
         cfg = match env::var("WAMR_BH_VPRINTF") {
             Ok(bh_vprintf) => match bh_vprintf.len() {
